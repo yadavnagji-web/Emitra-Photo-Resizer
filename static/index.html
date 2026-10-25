@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>फोटो & साइन रीसाइज़र - E-Mitra Desktop Suite</title>
+  <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Hind:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Slim Header (Zero-scroll design) -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-area">
+        <img src="/static/app_icon.png" alt="App Icon" style="width: 26px; height: 26px; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.3);">
+        <span class="logo-badge">⚡ FAST RESIZER</span>
+        <h1>फोटो & साइन रीसाइज़र</h1>
+      </div>
+      <div class="header-status">
+        <span class="status-dot"></span>
+        <span>100% ऑफ़लाइन • नो-AI</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Master Widescreen App Layout (Settings Left | Previews Right in ONE BOX) -->
+  <main class="main-container">
+    <div class="app-compact-grid">
+      
+      <!-- ================= LEFT PANEL: COMPACT SETTINGS ================= -->
+      <aside class="settings-card card">
+        <div class="card-title-bar">
+          <h3>⚙️ सेटिंग्स</h3>
+          <span class="badge badge-info">ई-मित्र टूल्स</span>
+        </div>
+
+        <!-- 3-TAB SWITCHER (Photo & Sign | Document/Aadhaar | Print Sheet) -->
+        <div class="settings-tabs-bar">
+          <button type="button" id="tabBtnPhoto" class="tab-btn active" title="पासपोर्ट फोटो व हस्ताक्षर">👤 फोटो & साइन</button>
+          <button type="button" id="tabBtnDoc" class="tab-btn" title="मार्कशीट व आधार Front+Back">📄 दस्तावेज़ (A4)</button>
+          <button type="button" id="tabBtnPrint" class="tab-btn" title="4x6 या A4 पासपोर्ट फोटो शीट">🖨️ प्रिंट शीट</button>
+        </div>
+
+        <!-- ================= TAB 1: PHOTO & SIGNATURE PANEL ================= -->
+        <div id="panelPhoto" class="tab-panel">
+          <!-- 1. Customer Name & Format -->
+          <div class="form-row-compact">
+            <div class="form-group flex-2">
+              <label for="fileBaseName">🏷️ फाइल नाम:</label>
+              <input type="text" id="fileBaseName" class="form-control" value="ramesh" placeholder="उदा. ramesh">
+            </div>
+            <div class="form-group flex-1">
+              <label for="formatSelect">📄 फॉर्मेट:</label>
+              <select id="formatSelect" class="form-control select-accent">
+                <option value="jpeg" selected>JPG</option>
+                <option value="pdf">PDF</option>
+              </select>
+            </div>
+          </div>
+          <div class="preview-filename-badge">
+            सेव नाम: <strong id="previewNameTag" class="text-primary">ramesh.photo.jpg</strong>
+          </div>
+
+          <!-- 2. Mode Select (Photo, Sign, Thumb, Both) -->
+          <div class="form-group">
+            <label for="modeSelect">🔍 प्रोसेस मोड:</label>
+            <select id="modeSelect" class="form-control select-accent">
+              <option value="photo" selected>👤 सिर्फ फोटो (Photo Only)</option>
+              <option value="auto">✨ दोनों (Photo & Sign)</option>
+              <option value="sign">✍️ सिर्फ सिग्नेचर (Sign Only)</option>
+              <option value="thumb">👆 अंगूठे का निशान (Thumb / LTI)</option>
+            </select>
+          </div>
+
+          <!-- 3. Target KB Inputs -->
+          <div class="kb-compact-box">
+            <div class="form-row-compact">
+              <div id="photoKbBox" class="form-group flex-1">
+                <label for="photoTargetKb">👤 फोटो KB:</label>
+                <div class="input-with-tag">
+                  <input type="number" id="photoTargetKb" class="form-control kb-input" value="50" min="5" max="500">
+                  <span class="input-tag">KB</span>
+                </div>
+              </div>
+
+              <div id="signKbBox" class="form-group flex-1 dimmed">
+                <label id="signKbLabel" for="signTargetKb">✍️ साइन KB:</label>
+                <div class="input-with-tag">
+                  <input type="number" id="signTargetKb" class="form-control kb-input" value="20" min="5" max="300">
+                  <span class="input-tag">KB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4. Quick Image Adjustments Toolbar (Rotate, Brightness, Background) -->
+          <div class="quick-adjust-toolbar">
+            <!-- Row A: Rotate 90 & Brightness/Dark Tone -->
+            <div class="adjust-row">
+              <span class="adjust-label">🔄 घुमाएँ:</span>
+              <button type="button" id="btnRotateLeft" class="btn-tool-sm" title="90° बाएँ घुमाएँ">↺ 90° L</button>
+              <button type="button" id="btnRotateRight" class="btn-tool-sm" title="90° दाएँ घुमाएँ">↻ 90° R</button>
+              <button type="button" id="btnToneBright" class="btn-tool-sm" title="हल्का गोरा / साफ करें">☀️ +लाइट</button>
+              <button type="button" id="btnToneDark" class="btn-tool-sm" title="साइन गहरा / डार्क करें">🌙 +डार्क</button>
+              <button type="button" id="btnToneReset" class="btn-tool-sm" title="नॉर्मल टोन">⚡ रीसेट</button>
+              <span id="toneIndicator" style="font-size: 10px; font-weight: 800; color: #2563eb; min-width: 24px; text-align: right;">0%</span>
+            </div>
+            <!-- Row B: Background Color Replacement -->
+            <div class="adjust-row">
+              <span class="adjust-label">🎨 पर्दा:</span>
+              <div class="bg-opt-group">
+                <label class="bg-opt"><input type="radio" name="photoBgColor" value="original" checked> <span>मूल</span></label>
+                <label class="bg-opt"><input type="radio" name="photoBgColor" value="white"> <span>⚪ सफेद</span></label>
+                <label class="bg-opt"><input type="radio" name="photoBgColor" value="blue"> <span>🔵 नीला</span></label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5. Optional Name & Date on Photo -->
+          <div class="name-date-compact-box">
+            <label class="custom-checkbox">
+              <input type="checkbox" id="addNameDateCheck">
+              <span class="checkmark"></span>
+              <strong>फोटो पर नाम व तारीख लगाएं</strong>
+            </label>
+
+            <div id="nameDateFields" class="form-row-compact hidden" style="margin-top: 6px;">
+              <input type="text" id="candidateName" class="form-control" placeholder="विद्यार्थी नाम (SURESH)">
+              <input type="text" id="photoDate" class="form-control" placeholder="तारीख (24/10/2026)">
+            </div>
+          </div>
+
+          <!-- 6. WhatsApp & Upload Action Buttons -->
+          <div class="buttons-compact-stack">
+            <button type="button" id="btnOpenWhatsApp" class="btn btn-whatsapp btn-block" title="WhatsApp खोलें या सामने लाएं">
+              💬 WhatsApp (स्प्लिट स्क्रीन)
+            </button>
+            <button type="button" id="pasteBtn" class="btn btn-paste btn-block">
+              📋 WhatsApp से पेस्ट करें (Ctrl + V)
+            </button>
+            <label for="fileInput" class="btn btn-outline btn-block file-browse-label">
+              📂 कंप्यूटर से फोटो चुनें
+            </label>
+            <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/jpg" style="display: none;">
+          </div>
+
+          <!-- 7. Save As & Clear Buttons -->
+          <div class="save-compact-stack">
+            <button id="btnSaveAs" class="btn btn-success btn-save-main btn-block">
+              💾 सेव करें (Save As)
+            </button>
+            <button id="btnClear" class="btn btn-danger btn-block">
+              🗑️ डिलीट करें (Clear)
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= TAB 2: DOCUMENT & MARKSHEET RESIZER ================= -->
+        <div id="panelDoc" class="tab-panel hidden">
+          <!-- Document Mode: Single vs ID Merge -->
+          <div class="form-group">
+            <label for="docModeSelect">📑 दस्तावेज़ प्रकार:</label>
+            <select id="docModeSelect" class="form-control select-accent">
+              <option value="single" selected>📄 सिंगल मार्कशीट / जाति / मूल निवास</option>
+              <option value="id_merge">🪪 पहचान पत्र (आधार / वोटर ID) Front + Back</option>
+            </select>
+          </div>
+
+          <!-- Customer Name & Format -->
+          <div class="form-row-compact">
+            <div class="form-group flex-2">
+              <label for="docBaseName">🏷️ फाइल नाम:</label>
+              <input type="text" id="docBaseName" class="form-control" value="ramesh_marksheet" placeholder="उदा. ramesh_marksheet">
+            </div>
+            <div class="form-group flex-1">
+              <label for="docFormatSelect">📄 फॉर्मेट:</label>
+              <select id="docFormatSelect" class="form-control select-accent">
+                <option value="pdf" selected>PDF</option>
+                <option value="jpeg">JPG</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Target KB Quick Pills -->
+          <div class="form-group">
+            <label>🎯 टार्गेट KB (सरकारी साइज):</label>
+            <div class="kb-pills-row">
+              <button type="button" class="kb-pill" data-kb="100">100 KB</button>
+              <button type="button" class="kb-pill active" data-kb="150">150 KB</button>
+              <button type="button" class="kb-pill" data-kb="200">200 KB</button>
+              <button type="button" class="kb-pill" data-kb="300">300 KB</button>
+            </div>
+            <div class="input-with-tag" style="margin-top: 5px;">
+              <input type="number" id="docTargetKb" class="form-control kb-input" value="150" min="20" max="1000">
+              <span class="input-tag">KB</span>
+            </div>
+          </div>
+
+          <!-- Document Upload & Paste Buttons -->
+          <div class="buttons-compact-stack">
+            <button type="button" id="btnDocPaste" class="btn btn-paste btn-block">
+              📋 WhatsApp से पेस्ट करें
+            </button>
+            <label for="docFileInput1" class="btn btn-outline btn-block file-browse-label">
+              <span id="docFileLabel1">📂 दस्तावेज़ / फ्रंट फोटो चुनें</span>
+            </label>
+            <input type="file" id="docFileInput1" accept="image/*,application/pdf" style="display: none;">
+
+            <label for="docFileInput2" id="docFileLabel2Wrap" class="btn btn-outline btn-block file-browse-label hidden">
+              📂 बैक (पिछला) फोटो चुनें
+            </label>
+            <input type="file" id="docFileInput2" accept="image/*,application/pdf" style="display: none;">
+          </div>
+
+          <!-- Save Document Button -->
+          <div class="save-compact-stack">
+            <button type="button" id="btnSaveDoc" class="btn btn-success btn-save-main btn-block">
+              💾 दस्तावेज़ सेव करें (Save As)
+            </button>
+            <button type="button" id="btnClearDoc" class="btn btn-danger btn-block">
+              🗑️ रीसेट (Clear)
+            </button>
+          </div>
+        </div>
+
+        <!-- ================= TAB 3: PASSPORT PHOTO PRINT SHEET ================= -->
+        <div id="panelPrint" class="tab-panel hidden">
+          <div class="form-group">
+            <label for="printSheetType">📇 प्रिंट शीट लेआउट:</label>
+            <select id="printSheetType" class="form-control select-accent">
+              <option value="4x6_6" selected>📇 4×6 इंच (6 फोटो - 2×3 ग्रिड)</option>
+              <option value="4x6_8">📇 4×6 इंच (8 फोटो - 2×4 ग्रिड)</option>
+              <option value="a4_12">📄 A4 शीट (12 फोटो)</option>
+              <option value="a4_24">📄 A4 शीट (24 फोटो)</option>
+            </select>
+          </div>
+
+          <div class="name-date-compact-box">
+            <label class="custom-checkbox">
+              <input type="checkbox" id="printBorderCheck" checked>
+              <span class="checkmark"></span>
+              <strong>काटने के लिए पतला काला बॉर्डर लगाएं</strong>
+            </label>
+          </div>
+
+          <div class="buttons-compact-stack" style="margin-top: 10px;">
+            <button type="button" id="btnPrintNow" class="btn btn-block" style="background: #0284c7; color: white; font-weight: 700;">
+              🖨️ तुरंत प्रिंट निकालें (Ctrl + P)
+            </button>
+            <button type="button" id="btnSavePrintSheet" class="btn btn-success btn-block">
+              💾 4×6 शीट सेव करें (Save JPG)
+            </button>
+          </div>
+
+          <p class="text-muted" style="font-size: 11px; margin-top: 8px; line-height: 1.4;">
+            💡 <strong>टिप:</strong> पहले टैब से कोई भी फोटो लोड करें, वह अपने आप 4×6 या A4 फोटो प्रिंट शीट में सेट हो जाएगी।
+          </p>
+        </div>
+
+        <!-- ================= BOTTOM STRIP: RECENT CUSTOMERS & SHORTCUTS ================= -->
+        <div class="recent-customers-bar">
+          <span>🕒 हाल ही के:</span>
+          <div id="recentChipsContainer" class="recent-chips-container">
+            <span class="text-muted" style="font-size: 10px;">(कोई हिस्ट्री नहीं)</span>
+          </div>
+        </div>
+
+        <div class="shortcuts-hint-bar">
+          ⌨️ <strong>Ctrl+S:</strong> सेव • <strong>Ctrl+V:</strong> पेस्ट • <strong>Del:</strong> रीसेट
+        </div>
+
+      </aside>
+
+      <!-- ================= RIGHT PANEL: UNIFIED PREVIEW BOX ================= -->
+      <section class="preview-unified-card card">
+        
+        <!-- Empty Placeholder (Before Image Load) -->
+        <div id="emptyDropZone" class="unified-empty-dropzone">
+          <div class="empty-icon-art">🖼️</div>
+          <h3>फोटो लोड करें</h3>
+          <p class="text-muted">
+            बायें हाथ पर दिए गए <strong>"📋 WhatsApp से पेस्ट करें"</strong> बटन को दबाएं या फोटो यहाँ ड्रैग करें।
+          </p>
+          <div class="paste-hint-pill">
+            💡 WhatsApp Web से <strong>"Copy Image"</strong> करें और <strong>Ctrl + V</strong> दबाएं!
+          </div>
+        </div>
+
+        <!-- Active State: BOTH PREVIEWS IN ONE UNIFIED BOX (Left: Crop | Right: Actual Preview) -->
+        <div id="activeUnifiedView" class="unified-split-container hidden">
+          
+          <!-- Unified Header Bar -->
+          <div class="unified-top-bar">
+            <div class="top-bar-left">
+              <span class="preview-title">📷 क्रॉप व एक्चुअल प्रीव्यू</span>
+              <span id="previewTagMeta" class="preview-meta-pill">50 KB • 3.5 × 4.5 cm</span>
+            </div>
+            <div class="top-bar-tools">
+              <button id="btnToolPhoto" class="btn btn-tool active-tool-photo">🟢 फोटो बॉक्स</button>
+              <button id="btnToolSign" class="btn btn-tool">🔵 साइन बॉक्स</button>
+              <button id="btnAutoReset" class="btn btn-outline btn-sm">⚡ रीसेट</button>
+            </div>
+          </div>
+
+          <!-- The Two Side-by-Side Halves Inside This One Box -->
+          <div class="unified-halves-row">
+            
+            <!-- LEFT HALF: Source Image with interactive crop handles -->
+            <div class="half-box left-half">
+              <div class="half-header">
+                <span>📐 मूल इमेज (माउस से बॉक्स खींचें):</span>
+              </div>
+              <div class="canvas-fit-box">
+                <canvas id="cropCanvas"></canvas>
+              </div>
+            </div>
+
+            <!-- RIGHT HALF: Ready Actual Output Preview (Passport photo & signature) -->
+            <div class="half-box right-half">
+              <div class="half-header">
+                <span>🔴 तैयार एक्चुअल फोटो (Live Output):</span>
+                <span class="badge badge-success">READY</span>
+              </div>
+
+              <div class="live-output-display">
+                
+                <!-- Live Passport Photo -->
+                <div id="livePhotoWrapper" class="output-canvas-wrap">
+                  <div id="bgActiveBadge" class="bg-active-pill hidden">⚪ सफेद बैकग्राउंड</div>
+                  <canvas id="livePhotoCanvas"></canvas>
+                </div>
+
+                <!-- Live Signature (if enabled) -->
+                <div id="liveSignWrapper" class="output-canvas-wrap hidden" style="margin-top: 8px;">
+                  <canvas id="liveSignCanvas"></canvas>
+                </div>
+
+                <div class="live-status-footer">
+                  फ़ाइल नाम: <strong id="liveFilenameDisplay" class="text-primary">ramesh.photo.jpg</strong>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- Active State: DOCUMENT RESIZER PREVIEW -->
+        <div id="activeDocView" class="doc-preview-container hidden">
+          <div class="unified-top-bar">
+            <div class="top-bar-left">
+              <span class="preview-title">📄 दस्तावेज़ लाइव प्रीव्यू</span>
+              <span id="docMetaPill" class="preview-meta-pill">150 KB • PDF Ready</span>
+            </div>
+            <div class="top-bar-tools">
+              <button id="btnDocRotateLeft" class="btn btn-outline btn-sm">↺ 90° घुमाएँ</button>
+            </div>
+          </div>
+          <div class="doc-canvas-box">
+            <canvas id="docCanvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Active State: PRINT SHEET PREVIEW -->
+        <div id="activePrintView" class="print-preview-container hidden">
+          <div class="unified-top-bar">
+            <div class="top-bar-left">
+              <span class="preview-title">🖨️ पासपोर्ट फोटो प्रिंट शीट</span>
+              <span id="printMetaPill" class="preview-meta-pill">6 फोटो • 4×6 इंच (300 DPI)</span>
+            </div>
+          </div>
+          <div class="print-canvas-box" id="printCanvasWrapper">
+            <canvas id="printSheetCanvas"></canvas>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Slim Footer -->
+  <footer class="footer">
+    <p>फोटो & साइन रीसाइज़र • 100% प्राइवेट • सभी प्रोसेसिंग आपके कंप्यूटर में होती है</p>
+  </footer>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>

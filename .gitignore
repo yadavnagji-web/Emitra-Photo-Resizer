@@ -1,0 +1,14 @@
+# Python & PyInstaller
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+build/
+dist/
+*.spec.bak
+*.exe
+
+# Temp / OS files
+.DS_Store
+Thumbs.db
+*.log
